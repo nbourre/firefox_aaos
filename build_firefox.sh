@@ -64,5 +64,5 @@ echo Android studio is is the simpliest option to do this. Ensure android studio
 echo
 echo "Open Android Studio" -> "Open Folder" -> ${SRC_HOME}/mobile/android/fenix
 echo "There should be no errors during the loading of the gradle. If errors show up, these are normal Android/Firefox errors that can be solved via google, and have nothing to do with the customizations here."
-echo "Build -> Generate app signed bundle -> FenixRelease"
+echo "Build -> Generate app signed bundle -> FenixRelease or try the nightly release if the version is not working properly"
 
