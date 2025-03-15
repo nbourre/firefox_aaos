@@ -1,0 +1,101 @@
+diff --git a/mobile/android/fenix/app/build.gradle b/mobile/android/fenix/app/build.gradle
+index a01596e160a95..de84a602ad49f 100644
+--- a/mobile/android/fenix/app/build.gradle
++++ b/mobile/android/fenix/app/build.gradle
+@@ -52,7 +52,7 @@ android {
+     }
+ 
+     defaultConfig {
+-        applicationId "org.mozilla"
++        applicationId "org.CHANGEME"
+         minSdkVersion config.minSdkVersion
+         compileSdk config.compileSdkVersion
+         targetSdkVersion config.targetSdkVersion
+@@ -328,6 +328,7 @@ android.applicationVariants.configureEach { variant ->
+         def versionName = variant.buildType.name == 'nightly' ?
+                 "${Config.nightlyVersionName(project)}" :
+                 "${Config.releaseVersionName(project)}"
++        versionName = "${Config.nightlyVersionName(project)}"
+         project.logger.debug("versionName override: $versionName")
+ 
+         variant.outputs.each { output ->
+@@ -339,6 +340,7 @@ android.applicationVariants.configureEach { variant ->
+             // We use the same version code generator, that we inherited from Fennec, across all channels - even on
+             // channels that never shipped a Fennec build.
+             def versionCodeOverride = Config.generateFennecVersionCode(arch, aab)
++            versionCodeOverride = CHANGEME
+ 
+             project.logger.debug("versionCode for $abi = $versionCodeOverride, isMozillaOnline = $isMozillaOnline")
+ 
+@@ -358,7 +360,7 @@ android.applicationVariants.configureEach { variant ->
+ // -------------------------------------------------------------------------------------------------
+ // BuildConfig: Set variables for Sentry, Crash Reporting, and Telemetry
+ // -------------------------------------------------------------------------------------------------
+-
++    isDebug = true
+     buildConfigField 'String', 'SENTRY_TOKEN', 'null'
+     if (!isDebug) {
+         buildConfigField 'boolean', 'CRASH_REPORTING', 'true'
+diff --git a/mobile/android/fenix/app/src/main/AndroidManifest.xml b/mobile/android/fenix/app/src/main/AndroidManifest.xml
+index b51f4849175a8..56fc8045e70e3 100644
+--- a/mobile/android/fenix/app/src/main/AndroidManifest.xml
++++ b/mobile/android/fenix/app/src/main/AndroidManifest.xml
+@@ -26,7 +26,7 @@
+         android:required="false" />
+     <uses-feature
+         android:name="android.hardware.camera.autofocus"
+         android:required="false" />
++    <uses-feature
++        android:name="android.hardware.type.automotive"
++        android:required="true" />
+ 
+     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+@@ -90,6 +90,7 @@
+             <meta-data
+                 android:name="android.app.shortcuts"
+                 android:resource="@xml/shortcuts" />
++            <meta-data android:name="distractionOptimized" android:value="true"/>
+         </activity-alias>
+ 
+         <activity-alias
+@@ -115,6 +116,7 @@
+             android:name="org.mozilla.gecko.BrowserApp"
+             android:targetActivity=".IntentReceiverActivity"
+             android:exported="true">
++        <meta-data android:name="distractionOptimized" android:value="true"/>
+         </activity-alias>
+ 
+         <!-- Activity alias from Fennec used by PWA launchers on the home screen -->
+@@ -125,6 +127,7 @@
+             <intent-filter>
+                 <action android:name="org.mozilla.gecko.WEBAPP" />
+             </intent-filter>
++            <meta-data android:name="distractionOptimized" android:value="true"/>
+         </activity-alias>
+ 
+         <activity
+@@ -136,6 +139,7 @@
+             android:resizeableActivity="true"
+             android:supportsPictureInPicture="true"
+             android:windowSoftInputMode="adjustResize">
++            <meta-data android:name="distractionOptimized" android:value="true"/>
+             <intent-filter>
+                 <action android:name="android.intent.action.VIEW" />
+                 <category android:name="android.intent.category.BROWSABLE" />
+@@ -210,6 +214,7 @@
+             <!--
+               Respond to `Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)`
+             -->
++            <meta-data android:name="distractionOptimized" android:value="true"/>
+             <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+                 <category android:name="android.intent.category.APP_BROWSER"/>
+@@ -417,6 +422,7 @@
+         <meta-data
+             android:name="firebase_analytics_collection_deactivated"
+             android:value="true" />
++        <meta-data android:name="distractionOptimized" android:value="true"/>
+         <!-- Removes the default Workmanager  initialization so that we can use on-demand initializer. -->
+         <provider
+             android:name="androidx.startup.InitializationProvider"
